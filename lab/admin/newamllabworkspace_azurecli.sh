@@ -17,7 +17,7 @@ TEAM_NAME=${TEAM_NAME:0:10}
 read -p  "Enter the location (such as westus2 or westeurope): " LOCATION
 read -p  "Enter the location abbreviation (such as w2 or we) (2 chars): " LOCATION_ABBR
 LOCATION_ABBR=${LOCATION_ABBR:0:2}
-read -p  "Enter the enviornment, such as res dev pro (3 chars): " DEVENVIRONMENT
+read -p  "Enter the environment. (e.g. res, dev, or pro) (3 chars): " DEVENVIRONMENT
 DEVENVIRONMENT=${DEVENVIRONMENT:0:3}
 read -p  "Enter the admin account (e.g. user@domain.com): " TEAM_LEAD
 read -p  "Enter the team security group: " TEAM_SECURITY_GROUP
