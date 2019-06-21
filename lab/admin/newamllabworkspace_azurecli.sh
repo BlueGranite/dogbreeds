@@ -242,7 +242,8 @@ else
     fi
 
     # add access to view the keys, including delete keys or delete or purge secrets
-    az keyvault set-policy --name $key_vault_name --resource-group $resourcegroup_name --upn $user \
+    echo "+ Set Key Vault Policy: "$admin
+    az keyvault set-policy --name $key_vault_name --resource-group $resourcegroup_name --upn $admin \
     --key-permissions backup delete create decrypt encrypt get import list purge recover restore sign unwrapKey update verify wrapKey \
     --secret-permissions backup delete purge get list recover restore set
 fi
