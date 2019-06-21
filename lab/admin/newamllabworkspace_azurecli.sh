@@ -234,6 +234,12 @@ else
 fi
 
 ##########
+# ADD DATA SCIENTIST ROLE
+##########
+echo "Creating Data Scientist role."
+az role definition create --role-definition role_datascientist.json
+
+##########
 # ADD INDIVIDUAL USER
 ##########
 
