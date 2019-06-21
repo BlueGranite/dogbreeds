@@ -215,22 +215,30 @@ then
     echo "no team lead"
 else
 	admin=$TEAM_LEAD
-	echo "adding team lead: "$admin
+	echo "Adding team lead: "$admin
 
-    # grant the team lead Reader permission for the team lead to the resource group
-    az role assignment create --role 'Reader' --assignee $admin  --resource-group $resourcegroup_name
+  # grant the team lead Reader permission for the team lead to the resource group
+  echo "+ Resource Group (Reader): "$admin
+  az role assignment create --role 'Reader' --assignee $admin  --resource-group $resourcegroup_name
 
+  echo "+ Share Workspace: "$admin
 	az ml workspace share -w $workspace_name -g $resourcegroup_name --role "Data Scientist" --user $admin
 
+  echo "+ App Insights (Owner): "$admin
 	az role assignment create --role 'Owner' --assignee $admin --scope $applicationInsights_provider
-	az role assignment create --role 'Storage Blob Data Owner' --assignee $admin --scope $storageAccount_provider
-	az role assignment create --role 'Owner' --assignee $admin --scope $keyVault_provider
-	az role assignment create --role 'Owner' --assignee $admin --scope $containerRegistry_provider
-	az role assignment create --role 'Storage Blob Data Owner' --assignee $admin --scope $data_storage_account_id
+  echo "+ Provider Storage Account (Owner): "$admin
+  az role assignment create --role 'Storage Blob Data Owner' --assignee $admin --scope $storageAccount_provider
+  echo "+ Key Vault (Owner): "$admin
+  az role assignment create --role 'Owner' --assignee $admin --scope $keyVault_provider
+  echo "+ Container Registry (Owner): "$admin
+  az role assignment create --role 'Owner' --assignee $admin --scope $containerRegistry_provider
+  echo "+ Data Storage Account (Owner): "$admin
+  az role assignment create --role 'Storage Blob Data Owner' --assignee $admin --scope $data_storage_account_id
 
 	if [ $ADLS == 'y' ]
 	then
-		az role assignment create --role 'Owner' --assignee $admin --scope $data_lake_storage_account_id
+    echo "+ Data Lake Store (Owner): "$admin
+    az role assignment create --role 'Owner' --assignee $admin --scope $data_lake_storage_account_id
     fi
 
     # add access to view the keys, including delete keys or delete or purge secrets
