@@ -19,7 +19,7 @@ read -p  "Enter the location abbreviation (such as w2 or we) (2 chars): " LOCATI
 LOCATION_ABBR=${LOCATION_ABBR:0:2}
 read -p  "Enter the enviornment, such as res dev pro (3 chars): " DEVENVIRONMENT
 DEVENVIRONMENT=${DEVENVIRONMENT:0:3}
-read -p  "Enter the team leader: " TEAM_LEAD
+read -p  "Enter the admin account (e.g. user@domain.com): " TEAM_LEAD
 read -p  "Enter the team security group: " TEAM_SECURITY_GROUP
 read -p "Create Azure Data Lake Store account (y/n): " ADLS
 
@@ -204,19 +204,17 @@ az resource tag --id $workspace_provider $storageAccount_provider $applicationIn
 
 echo "setting role based access control"
 
-read -p  "Enter your domain name: (e.g. @microsoft.com) " DOMAIN_NAME
-
 if [ $TEAM_LEAD == "" ]
 then
     echo "no team lead"
 else
-	admin="$TEAM_LEAD$DOMAIN_NAME"
+	admin=$TEAM_LEAD
 	echo "adding team lead: "$admin
 
     # grant the team lead Reader permission for the team lead to the resource group
     az role assignment create --role 'Reader' --assignee $admin  --resource-group $resourcegroup_name
 
-	az ml workspace share -w $workspace_name -g $resourcegroup_name --role "ML User" --user $admin
+	az ml workspace share -w $workspace_name -g $resourcegroup_name --role "Data Scientist" --user $admin
 
 	az role assignment create --role 'Owner' --assignee $admin --scope $applicationInsights_provider
 	az role assignment create --role 'Storage Blob Data Owner' --assignee $admin --scope $storageAccount_provider
@@ -243,7 +241,8 @@ if [[ -z $INDIDUAL_USER_LEAD ]]
 then
 	echo "no individual user to add"
 else
-  $user = "$useralias$DOMAIN_NAME"
+  read -p  "Who else would you like to add? (e.g. user@domain.com) " OTHER_USER
+  $user = "$OTHER_USER"
 	#$user = $useralias + "@microsoft.com"
 	echo "adding "$user" as ML contributor"
 
