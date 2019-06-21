@@ -199,6 +199,12 @@ echo "tagging resources "
 az resource tag --id $workspace_provider $storageAccount_provider $applicationInsights_provider $containerRegistry_provider $keyVault_provider --tags dept=$DEPARTMENT_NAME team=$TEAM_NAME owner=$TEAM_LEAD expires=2019-06-30 location=$LOCATION role=AML
 
 ##########
+# ADD DATA SCIENTIST ROLE
+##########
+echo "Creating Data Scientist role."
+az role definition create --role-definition role_datascientist.json
+
+##########
 # SET ADMIN
 ##########
 
@@ -232,12 +238,6 @@ else
     --key-permissions backup delete create decrypt encrypt get import list purge recover restore sign unwrapKey update verify wrapKey \
     --secret-permissions backup delete purge get list recover restore set
 fi
-
-##########
-# ADD DATA SCIENTIST ROLE
-##########
-echo "Creating Data Scientist role."
-az role definition create --role-definition role_datascientist.json
 
 ##########
 # ADD INDIVIDUAL USER
