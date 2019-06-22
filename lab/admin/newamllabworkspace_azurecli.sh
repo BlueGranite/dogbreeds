@@ -1,6 +1,6 @@
 #!/bin/sh
 
-## this script sets up the Azure Machine Learning service workspace using the inputs
+## this script sets up the Azure Machine Learning service workspace using the Azure CLI
 
 echo "CREATING WORKSPACE, ASSIGNING ROLES"
 
