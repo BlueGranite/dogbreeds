@@ -10,7 +10,7 @@ workspace:
   create_dls: n
 
 compute:
-  workspace: bgmr-bluegranit-eastus2-dev
+  workspace: bgmrbluegranite2devws
   nodes: 1
   priority: lowpriority
   vm_sku: STANDARD_DS3_V2
