@@ -36,7 +36,7 @@ workspace_name=${config_compute_workspace}
 
 NODES=${config_compute_nodes}
 PRIORITY=${config_compute_priority}
-vm_sku=${config_compute_vm_sku}
+vm_size=${config_compute_vm_sku}
 
 resourcegroup_name=$DEPARTMENT_NAME-$TEAM_NAME-$LOCATION-$DEVENVIRONMENT
 resource_name=$DEPARTMENT_NAME$TEAM_NAME$LOCATION$DEVENVIRONMENT
