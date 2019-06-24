@@ -14,8 +14,8 @@ read -p  "Enter the department name (4 chars): " DEPARTMENT_NAME
 DEPARTMENT_NAME=${DEPARTMENT_NAME:0:4}
 read -p  "Enter the team name (10 chars): " TEAM_NAME
 TEAM_NAME=${TEAM_NAME:0:10}
-read -p  "Enter the location (such as westus2 or westeurope): " LOCATION
-read -p  "Enter the location abbreviation (such as w2 or we) (2 chars): " LOCATION_ABBR
+read -p  "Enter the region (such as westus2 or westeurope): " LOCATION
+read -p  "Enter the region abbreviation (such as w2 or we) (2 chars): " LOCATION_ABBR
 LOCATION_ABBR=${LOCATION_ABBR:0:2}
 read -p  "Enter the environment. (e.g. res, dev, or pro) (3 chars): " DEVENVIRONMENT
 DEVENVIRONMENT=${DEVENVIRONMENT:0:3}

@@ -1,17 +1,19 @@
 #!/bin/sh
 
+## this script creates a compute context for the Azure Machine Learning service workspace using the Azure CLI
+
 echo "ADDING COMPUTE TO A WORKSPACE"
 ## run this if you are starting from scratch; skip if you are continuing from newamllabworkspace.sh
 read -p  "Enter the subscription ID: " SUBSCRIPTION_ID
-read -p  "Enter the department name: " DEPARTMENT_NAME
-read -p  "Enter the team name: " TEAM_NAME
-read -p  "Enter the location (such as westus2 or westeurope): " LOCATION
-read -p  "Enter the location abbreviation (such as wu2 or we): " LOCATION_ABBR
-read -p  "Enter the enviornment, such as res or dev or prod: " DEVENVIRONMENT
-read -p  "Enter the team leader alias: " TEAM_LEAD
+read -p  "Enter the department name (4 chars): " DEPARTMENT_NAME
+read -p  "Enter the team name (10 chars): " TEAM_NAME
+read -p  "Enter the region (such as westus2 or westeurope): " LOCATION
+read -p  "Enter the region abbreviation (such as w2 or we) (2 chars): " LOCATION_ABBR
+read -p  "Enter the enviornment. (e.g. res, dev, or pro) (3 chars): " DEVENVIRONMENT
+read -p  "Enter the admin account (e.g. user@domain.com): " TEAM_LEAD
 read -p  "Enter the workspace name: " workspace_name
 
-## run 
+## run
 read -p "Enter the maximum number of nodes: " NODES
 read -p "Enter the priority, either lowpriority or dedicated: " PRIORITY
 read -p "Enter GPU type, such as K80, P100 or CPU: " GPU_TYPE
@@ -43,7 +45,7 @@ GPU_TYPE="${GPU_TYPE,,}"
 
 vm_size="STANDARD_"
 
-if [ $GPU_TYPE == "k80" ] 
+if [ $GPU_TYPE == "k80" ]
 then
 	echo "using "$GPU_TYPE
 	vm_size="STANDARD_"
@@ -52,7 +54,7 @@ then
         $vm_size=$vm_size"NC6"
     fi
     if [ $GPUS == 2 ]
-	then 
+	then
         $vm_size=$vm_size"NC12"
     fi
     if [ $GPUS == 4 ]
@@ -125,7 +127,3 @@ echo "export RESOURCE_GROUP=\"$resourcegroup_name\"
 export WORKSPACE=\"$workspace_name\"
 export SUBSCRIPTION_ID=\"$SUBSCRIPTION_ID\"
 export CLUSTER_NAME=\"$computetarget_name\""
-
-
-
-
