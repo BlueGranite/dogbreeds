@@ -31,3 +31,5 @@ compute:
   priority: lowpriority
   ## VM SKU: VM SKU from `az vm list-sizes --location <region> --output table`
   vm_sku: STANDARD_DS3_V2
+  ## Cluster Name: Give a name to your new cluster. Up to 16 characters.
+  cluster_name: general_ds3_v2_cluster
