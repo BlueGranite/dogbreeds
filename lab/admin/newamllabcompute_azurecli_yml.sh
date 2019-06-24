@@ -22,6 +22,9 @@ parse_yaml() {
 ## BEGIN
 echo "ADDING COMPUTE TO A WORKSPACE"
 
+## READ YAML file
+eval $(parse_yaml config.yml "config_")
+
 SUBSCRIPTION_ID=${config_workspace_subscription}
 DEPARTMENT_NAME=${config_workspace_department:0:4}
 TEAM_NAME=${config_workspace_team:0:10}
