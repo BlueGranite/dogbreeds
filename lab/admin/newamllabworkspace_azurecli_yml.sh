@@ -316,7 +316,7 @@ else
     echo "adding security group "$group_id" to workspace "$workspace_name
     # az ml workspace share -w $workspace_name -g $resourcegroup_name --role "ML User" --user $group_id ## possibily fails
 
-    az role assignment create --role 'ML User' ---assignee-object-id  $group_id  --scope  $workspace_provider
+    az role assignment create --role 'Data Scientist' ---assignee-object-id  $group_id  --scope  $workspace_provider
 	az role assignment create --role 'Contributor' --assignee-object-id  $group_id --scope $applicationInsights_provider
 	az role assignment create --role 'Storage Blob Data Contributor' --assignee-object-id  $group_id --scope $storageAccount_provider
 	az role assignment create --role 'Contributor' --assignee-object-id  $group_id --scope $keyVault_provider
