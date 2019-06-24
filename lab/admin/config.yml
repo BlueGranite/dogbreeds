@@ -1,0 +1,16 @@
+workspace:
+  subscription: 8b41ca9c-0c5a-4c01-b49b-5bb8d329cc27
+  department: bgmr
+  team: bluegranit
+  region: eastus2
+  region_abbv: e2
+  environment: dev
+  admin: cford@blue-granite.com
+  security_group:
+  create_dls: n
+
+compute:
+  workspace: bgmr-bluegranit-eastus2-dev
+  nodes: 1
+  priority: lowpriority
+  vm_sku: STANDARD_DS3_V2

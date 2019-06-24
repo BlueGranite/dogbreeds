@@ -11,7 +11,7 @@ read -p  "Enter the region (such as westus2 or westeurope): " LOCATION
 read -p  "Enter the region abbreviation (such as w2 or we) (2 chars): " LOCATION_ABBR
 read -p  "Enter the enviornment. (e.g. res, dev, or pro) (3 chars): " DEVENVIRONMENT
 read -p  "Enter the admin account (e.g. user@domain.com): " TEAM_LEAD
-read -p  "Enter the workspace name: " workspace_name
+read -p  "Enter the Azure Machine Learning workspace name: " workspace_name
 
 ## run
 read -p "Enter the maximum number of nodes: " NODES
