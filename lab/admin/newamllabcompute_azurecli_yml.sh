@@ -63,6 +63,7 @@ fi
 priorityabbr=${PRIORITY:0:3}
 
 #computetarget_name=${vm_size//_/-}"-cluster-"$LOCATION_ABBR-$priorityabbr
+config_compute_cluster_name=${config_compute_cluster_name//_/-}
 computetarget_name=${config_compute_cluster_name:0:15}
 
 echo "### Creating compute with the following... ###"
