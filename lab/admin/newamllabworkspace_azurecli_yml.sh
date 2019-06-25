@@ -25,8 +25,15 @@ echo "CREATING WORKSPACE, ASSIGNING ROLES"
 ## it tags the resource group and resources
 ## it also adds user and team
 
+CUSTOM_YAML=$1
+
 ## READ YAML file
-eval $(parse_yaml config.yml "config_")
+if [ $CUSTOM_YAML != '']
+then
+  eval $(parse_yaml $CUSTOM_YAML "config_")
+else
+  eval $(parse_yaml config.yml "config_")
+fi
 
 ## script requires Azure CLI with the Azure ML extension to be installed
 
