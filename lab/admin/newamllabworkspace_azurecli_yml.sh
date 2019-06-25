@@ -29,7 +29,7 @@ echo "CREATING WORKSPACE, ASSIGNING ROLES"
 CUSTOM_YAML="$1"
 
 ## READ YAML file
-if [ $CUSTOM_YAML != '' ]
+if [ "$CUSTOM_YAML" != '' ]
 then
   eval $(parse_yaml $CUSTOM_YAML "config_")
 else
@@ -49,7 +49,7 @@ TEAM_LEAD=${config_workspace_admin}
 TEAM_SECURITY_GROUP=${config_workspace_security_group}
 ADLS=${config_workspace_adls}
 
-if [ $CUSTOM_NAME != '' ]
+if [ "$CUSTOM_NAME" != '' ]
 then
   resourcegroup_name=$CUSTOM_NAME
   resource_name=$CUSTOM_NAME
