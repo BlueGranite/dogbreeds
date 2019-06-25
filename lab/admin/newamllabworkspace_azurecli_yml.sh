@@ -64,7 +64,7 @@ echo 'RESOURCE GROUP: '$resourcegroup_name
 echo 'resource_name: '$resource_name
 
 read -p "Press 'y' to continue " CONTINUE_NOW
-if [ $CONTINUE_NOW != 'y' ]
+if [ "$CONTINUE_NOW" != 'y' ]
 then
     exit 1
 fi
@@ -77,7 +77,7 @@ az account set --subscription $SUBSCRIPTION_ID
 
 ## create resource group
 resource_exists=$(az group exists --name $resourcegroup_name)
-if [ $resource_exists == 'false' ]
+if [ "$resource_exists" == 'false' ]
 then
     echo "created: " $resourcegroup_name
     az group create --name $resourcegroup_name --location $LOCATION
@@ -150,7 +150,7 @@ az resource tag --name $data_storage_account_name --resource-group $resourcegrou
 ## if Azure Data Lake Storage is required
 
 ADLS="${ADLS,,}"
-if [ $ADLS == 'y' ]
+if [ "$ADLS" == 'y' ]
 then
 	data_lake_store_name=$resource_name"big"
 	data_lake_store_name=${data_lake_store_name:0:23}
@@ -186,7 +186,7 @@ az keyvault secret set --name $workspace_storage_account_name --vault-name $key_
 ## create container registry
 echo "creating container registry "$container_registry_name
 name_available=$(az acr check-name --name $container_registry_name --query nameAvailable)
-if [ $name_available == 'true' ]
+if [ "$name_available" == 'true' ]
 then
 	echo "name available for container registry "$container_registry_name
 	az acr create --name $container_registry_name --resource-group $resourcegroup_name --sku Basic --location $LOCATION --admin-enabled true
@@ -243,7 +243,7 @@ az role definition create --role-definition role_datascientist.json
 
 echo "setting role based access control"
 
-if [ $TEAM_LEAD == "" ]
+if [ "$TEAM_LEAD" == "" ]
 then
     echo "no team lead"
 else
@@ -339,7 +339,7 @@ else
 	az role assignment create --role 'Contributor' --assignee-object-id  $group_id --scope $containerRegistry_provider
 	az role assignment create --role 'Storage Blob Data Contributor' --assignee-object-id  $group_id --scope $data_storage_account_id
 
-	if [ $ADLS == 'y' ]
+	if [ "$ADLS" == 'y' ]
 	then
 		az role assignment create --role 'Contributor'--assignee-object-id  $group_id --scope $data_lake_storage_account_id
     fi
@@ -360,7 +360,7 @@ echo
 echo "Here are so additional resources for you"
 echo "YOUR DATA STORAGE ACCOUNT: "$data_storage_account_name
 echo "YOUR KEY VAULT: "$key_vault_name
-if [ $ADLS == 'y' ]
+if [ "$ADLS" == 'y' ]
 then
     echo "YOUR DATA LAKE STORAGE ACCOUNT: "$data_lake_store_name
 fi

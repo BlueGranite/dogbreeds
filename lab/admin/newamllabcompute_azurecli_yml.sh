@@ -76,7 +76,7 @@ az account set --subscription $SUBSCRIPTION_ID
 
 ## validate resource group exists
 resource_exists=$(az group exists --name $resourcegroup_name)
-if [ $resource_exists == 'false' ]
+if [ "$resource_exists" == 'false' ]
 then
 	echo "resource group does not exist: " $resourcegroup_name
 	exit 1
