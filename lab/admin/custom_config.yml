@@ -5,7 +5,7 @@ workspace:
   ## Subscription: Your Azure Subscription
   subscription: 8b41ca9c-0c5a-4c01-b49b-5bb8d329cc27
   ## Custom Name: Give a custom name to the resources. (Optional)
-  custom_name: 
+  custom_name: mycustomamls
   ## Department: 4 characters
   department: bgmr
   ## Team: 10 characters

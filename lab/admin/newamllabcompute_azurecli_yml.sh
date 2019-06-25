@@ -22,12 +22,13 @@ parse_yaml() {
 ## BEGIN
 echo "ADDING COMPUTE TO A WORKSPACE"
 
-CUSTOM_YAML=$1
+# eval $(parse_yaml config.yml "config_")
+CUSTOM_YAML="$1"
 
 ## READ YAML file
-if [ $CUSTOM_YAML != '']
+if [ $CUSTOM_YAML != '' ]
 then
-  eval $(parse_yaml $CUSTOM_YAML "config_")
+  eval $(parse_yaml "$CUSTOM_YAML" "config_")
 else
   eval $(parse_yaml config.yml "config_")
 fi
@@ -41,7 +42,7 @@ LOCATION_ABBR=${config_workspace_region_abbv:0:2}
 DEVENVIRONMENT=${config_workspace_environment:0:3}
 TEAM_LEAD=${config_workspace_admin}
 
-if [ $CUSTOM_NAME != '']
+if [ $CUSTOM_NAME != '' ]
 then
   resourcegroup_name=$CUSTOM_NAME
   resource_name=$CUSTOM_NAME
