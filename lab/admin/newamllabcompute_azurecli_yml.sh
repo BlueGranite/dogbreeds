@@ -28,7 +28,7 @@ CUSTOM_YAML="$1"
 ## READ YAML file
 if [ $CUSTOM_YAML != '' ]
 then
-  eval $(parse_yaml "$CUSTOM_YAML" "config_")
+  eval $(parse_yaml $CUSTOM_YAML "config_")
 else
   eval $(parse_yaml config.yml "config_")
 fi
