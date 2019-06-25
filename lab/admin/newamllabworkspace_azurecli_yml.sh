@@ -31,6 +31,7 @@ eval $(parse_yaml config.yml "config_")
 ## script requires Azure CLI with the Azure ML extension to be installed
 
 SUBSCRIPTION_ID=${config_workspace_subscription}
+CUSTOM_NAME=${config_workspace_custom_name}
 DEPARTMENT_NAME=${config_workspace_department:0:4}
 TEAM_NAME=${config_workspace_team:0:10}
 LOCATION=${config_workspace_region}
@@ -40,9 +41,16 @@ TEAM_LEAD=${config_workspace_admin}
 TEAM_SECURITY_GROUP=${config_workspace_security_group}
 ADLS=${config_workspace_adls}
 
-resourcegroup_name=$DEPARTMENT_NAME-$TEAM_NAME-$LOCATION-$DEVENVIRONMENT
-resource_name=$DEPARTMENT_NAME$TEAM_NAME$LOCATION_ABBR$DEVENVIRONMENT
-resource_name=${resource_name:0:19}
+if [ $CUSTOM_NAME != '']
+then
+  resourcegroup_name=$CUSTOM_NAME
+  resource_name=$CUSTOM_NAME
+  resource_name=${resource_name:0:19}
+else
+  resourcegroup_name=$DEPARTMENT_NAME-$TEAM_NAME-$LOCATION-$DEVENVIRONMENT
+  resource_name=$DEPARTMENT_NAME$TEAM_NAME$LOCATION_ABBR$DEVENVIRONMENT
+  resource_name=${resource_name:0:19}
+fi
 
 echo 'RESOURCE GROUP: '$resourcegroup_name
 echo 'resource_name: '$resource_name

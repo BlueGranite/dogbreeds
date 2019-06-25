@@ -22,24 +22,45 @@ parse_yaml() {
 ## BEGIN
 echo "ADDING COMPUTE TO A WORKSPACE"
 
+CUSTOM_YAML=$1
+
 ## READ YAML file
-eval $(parse_yaml config.yml "config_")
+if [ $CUSTOM_YAML != '']
+then
+  eval $(parse_yaml $CUSTOM_YAML "config_")
+else
+  eval $(parse_yaml config.yml "config_")
+fi
 
 SUBSCRIPTION_ID=${config_workspace_subscription}
+CUSTOM_NAME=${config_workspace_custom_name}
 DEPARTMENT_NAME=${config_workspace_department:0:4}
 TEAM_NAME=${config_workspace_team:0:10}
 LOCATION=${config_workspace_region}
 LOCATION_ABBR=${config_workspace_region_abbv:0:2}
 DEVENVIRONMENT=${config_workspace_environment:0:3}
 TEAM_LEAD=${config_workspace_admin}
-workspace_name=${config_compute_workspace}
+
+if [ $CUSTOM_NAME != '']
+then
+  resourcegroup_name=$CUSTOM_NAME
+  resource_name=$CUSTOM_NAME
+  resource_name=${resource_name:0:19}
+else
+  resourcegroup_name=$DEPARTMENT_NAME-$TEAM_NAME-$LOCATION-$DEVENVIRONMENT
+  resource_name=$DEPARTMENT_NAME$TEAM_NAME$LOCATION_ABBR$DEVENVIRONMENT
+  resource_name=${resource_name:0:19}
+fi
+
+#workspace_name=${config_compute_workspace}
+workspace_name=$resource_name"ws"
 
 NODES=${config_compute_nodes}
 PRIORITY=${config_compute_priority}
 vm_size=${config_compute_vm_sku}
 
-resourcegroup_name=$DEPARTMENT_NAME-$TEAM_NAME-$LOCATION-$DEVENVIRONMENT
-resource_name=$DEPARTMENT_NAME$TEAM_NAME$LOCATION$DEVENVIRONMENT
+#resourcegroup_name=$DEPARTMENT_NAME-$TEAM_NAME-$LOCATION-$DEVENVIRONMENT
+#resource_name=$DEPARTMENT_NAME$TEAM_NAME$LOCATION$DEVENVIRONMENT
 
 echo 'resourcegroup_name: '$resourcegroup_name
 echo 'WORKSPACE: '$workspace_name
