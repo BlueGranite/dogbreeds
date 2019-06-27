@@ -90,17 +90,39 @@ The workspace is the top-level resource for Azure Machine Learning service. For 
 
 `git clone --single-branch --branch colby https://github.com/BlueGranite/dogbreeds.git`
 
-This workspace template script receives the required workspace creation and naming parameters such as subscription id, department, team, region, and admin from a configuration file. The user has the option to either customize the configuration file using `custom_config.yml` or retain the already established configurations in `config.yml`. To add custom configurations:
+This workspace template script receives the required workspace creation and naming parameters such as subscription id, department, team, region, and admin from a configuration file. You will need to update the `config.yml` file with your own account information as follows:
 
-- Open the `custom_config.yml` in the CLI editor. This file, along with the other required template files, are located in the downloaded directory from above in lab/admin
+- Open the `config.yml` in the CLI editor and update the values with your own subscription and naming information. This file, along with the other required template files, are located in the downloaded directory from above in *lab/admin*.
+  
+  - *Note*: To edit your `config.yml` file, you can use your favorite command line text editor such as `nano`. Use the command `nano config.yml`and the file will open in the text editior. Update the parameters to the desired values. Once you are finished editing, press `ctrl-x` to exit and then `y` to save.
+  
+  - Workspace Parameters:
+    
+    | Parameter      | Description                                                                                                                                                                                                                                                                                              | Example                                          |
+    |:--------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:------------------------------------------------:|
+    | subscription   | Your Azure subscription where the resources are to be created                                                                                                                                                                                                                                            | 8b41ca0c-0c5a-4c01-b49b-5bb8d329cc27             |
+    | custom_name    | Give a custom name to the resources. Can be used to suppress Microsoft’s automatic, conventional naming scheme of concatenating the other parameters. This parameter is useful in ensuring multiple workspaces with common names are not trying to be created which would result in an error. (Optional) | myamlsresource                                   |
+    | department     | 4 characters to specify the department name at your organization                                                                                                                                                                                                                                         | bgmr                                             |
+    | team           | 10 characters to specify the team name at your organization                                                                                                                                                                                                                                              | bluegranit                                       |
+    | region         | The region where the resources are to be created.                                                                                                                                                                                                                                                        | eastus2                                          |
+    | region_abbv    | 2 characters abbreviation of the desired region                                                                                                                                                                                                                                                          | e2                                               |
+    | environment    | 3 characters to specify the type of environment                                                                                                                                                                                                                                                          | select from `res`, `dev`, or `pro`               |
+    | admin          | The admin Microsoft account that will be used to create the resources                                                                                                                                                                                                                                    | user@domain.com                                  |
+    | security_group | Name of the security group on premises to map a group in Azure Active Directory (Optional)                                                                                                                                                                                                               | datasciencegroup                                 |
+    | create_dls     | Should the script create an additional Azure Data Lake Store for housing large datasets?                                                                                                                                                                                                                 | `y` to create the data lake store or `n` to skip |
+  
+  - Compute Parameters:
+    
+    | Parameter    | Description                                                                                                                                        | Example                             |
+    |:------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------:|
+    | nodes        | Maximum number of nodes to which the cluster will scale                                                                                            | 1                                   |
+    | priority     | Priority level of the cluster resource                                                                                                             | either `lowpriority` or `dedicated` |
+    | vm_sku       | VM SKU from `az vm list-sizes --location,--output table`or from [this list](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sizes) | STANDARD_DS3_V2                     |
+    | cluster_name | Name of the cluster to be created, up to 16 characters                                                                                             | ds3_v2_cluster                      |
 
-- Update the parameters to their desired values
+Run the workspace creation script by using `bash newamllabworkspace_azurecli_yml.sh`. The script will automatically look for the `config.yml` file to read in your settings.
 
-- The parameter `custom_name` is optional but can be used to suppress Microsoft’s automatic, conventional naming scheme of concatenating the other parameters. This parameter is useful in ensuring multiple workspaces with common names are not trying to be created which would result in an error. *Add in custom naming recommendations chart*
-
-- Save the updated configuration file.
-
-Run the workspace creation script by using `bash newamllabworkspace_azurecli_yml.sh` or `bash newamllabworkspace_azurecli_yml.sh custom_config.yml`. The first bash command is used if no configuration customizations were created. The workspace script will use the parameters from the config.yml file. The second bash command option uses the customized configurations in the `custom_config.yml` file.
+The user also has the option to specify a different YAML file for the script to use. Simply create your YAML file and pass the filename in as you call the script using `bash newamllabworkspace_azurecli_yml.sh <YOUR CONFIG FILENAME>.yml`. 
 
 Enter ‘`y`’ to continue. A prompt will appear to follow the Microsoft link to login with the provided authentication code.
 
@@ -144,7 +166,7 @@ The `newamllabcompute_azurecli_yml.sh` script creates a remote compute target ac
 
 Similarly, to the workspace script, these parameters can be customized in the `custom_config.yml` file.
 
-To run the compute script, enter `bash newamllabcompute_azurecli_yml.sh` or `bash newamllabcompute_azurecli_yml.sh custom_config.yml` (if parameter changes were made). Again, follow the Microsoft hyperlink to the login page and enter the provided authentication code.
+To run the compute script, enter `bash newamllabcompute_azurecli_yml.sh` or `bash newamllabcompute_azurecli_yml.sh <YOUR CONFIG FILENAME>.yml` (if using a different YAML file from the `config.yml`). Again, follow the Microsoft hyperlink to the login page and enter the provided authentication code.
 
 [IMAGE HERE]
 
