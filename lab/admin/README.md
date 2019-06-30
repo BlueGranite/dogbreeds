@@ -113,12 +113,12 @@ This workspace template script receives the required workspace creation and nami
   
   - Compute Parameters:
     
-    | Parameter    | Description                                                                                                                                        | Example                             |
-    |:------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------:|
-    | nodes        | Maximum number of nodes to which the cluster will scale                                                                                            | 1                                   |
-    | priority     | Priority level of the cluster resource                                                                                                             | either `lowpriority` or `dedicated` |
-    | vm_sku       | VM SKU from `az vm list-sizes --location,--output table`or from [this list](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sizes) | STANDARD_DS3_V2                     |
-    | cluster_name | Name of the cluster to be created, up to 16 characters                                                                                             | ds3_v2_cluster                      |
+    | Parameter    | Description                                                                                                                                         | Example                             |
+    |:------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------:|
+    | nodes        | Maximum number of nodes to which the cluster will scale                                                                                             | 1                                   |
+    | priority     | Priority level of the cluster resource                                                                                                              | either `lowpriority` or `dedicated` |
+    | vm_sku       | VM SKU from `az vm list-sizes --location,--output table` or from [this list](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sizes) | STANDARD_DS3_V2                     |
+    | cluster_name | Name of the cluster to be created, up to 16 characters                                                                                              | ds3_v2_cluster                      |
 
 Run the workspace creation script by using `bash newamllabworkspace_azurecli_yml.sh`. The script will automatically look for the `config.yml` file to read in your settings.
 
