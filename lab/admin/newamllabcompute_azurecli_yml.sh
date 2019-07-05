@@ -94,7 +94,9 @@ IFS=',()][' read -a computetarget_name <<<${config_compute_cluster_name}
 
 echo "Creating "${#computetarget_name[@]}" compute clusters..."
 
-for i in "$computetarget_name[@]"
+end=${#computetarget_name[@]}
+
+for ((i=0; i<end; i++))
 do
 	echo "### Creating compute with the following... ###"
 	echo "Cluster Name: "${computetarget_name[i]}
