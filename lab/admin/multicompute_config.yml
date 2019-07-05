@@ -32,4 +32,4 @@ compute:
   ## VM SKU: VM SKU from `az vm list-sizes --location <region> --output table`
   vm_sku: STANDARD_DS3_V2, STANDARD_D13_V2, STANDARD_NV6
   ## Cluster Name: Give a name to your new cluster. Up to 16 characters.
-  cluster_name: ds3_v2_cluster, ds13_v2_2ndclust, nv6_gpucluster
+  cluster_name: ds3-v2-cluster, ds13-v2-2ndclust, nv6-gpucluster
