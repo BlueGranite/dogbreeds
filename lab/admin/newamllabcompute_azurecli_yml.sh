@@ -57,11 +57,11 @@ fi
 workspace_name=$resource_name"ws"
 
 #NODES=${config_compute_nodes}
-IFS=',()][' read -a NODES <<<${config_compute_nodes}
+IFS=', ()][' read -a NODES <<<${config_compute_nodes}
 #PRIORITY=${config_compute_priority}
-IFS=',()][' read -a PRIORITY <<<${config_compute_priority}
+IFS=', ()][' read -a PRIORITY <<<${config_compute_priority}
 #vm_size=${config_compute_vm_sku}
-IFS=',()][' read -a vm_size <<<${config_compute_vm_sku}
+IFS=', ()][' read -a vm_size <<<${config_compute_vm_sku}
 
 #resourcegroup_name=$DEPARTMENT_NAME-$TEAM_NAME-$LOCATION-$DEVENVIRONMENT
 #resource_name=$DEPARTMENT_NAME$TEAM_NAME$LOCATION$DEVENVIRONMENT
@@ -90,7 +90,7 @@ fi
 ##computetarget_name=${vm_size//_/-}"-cluster-"$LOCATION_ABBR-$priorityabbr
 #config_compute_cluster_name=${config_compute_cluster_name//_/-}
 #computetarget_name=${config_compute_cluster_name:0:15}
-IFS=',()][' read -a computetarget_name <<<${config_compute_cluster_name}
+IFS=', ()][' read -a computetarget_name <<<${config_compute_cluster_name}
 
 echo "Creating "${#computetarget_name[@]}" compute clusters..."
 
