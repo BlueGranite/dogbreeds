@@ -26,10 +26,10 @@ workspace:
 ## Configurations for the Compute Target creation
 compute:
   ## Nodes: Maximum number of nodes in the cluster
-  nodes: 1
+  nodes: 1, 2, 1
   ## Priority: either `lowpriority` or `dedicated`
-  priority: lowpriority
+  priority: lowpriority, lowpriority, lowpriority
   ## VM SKU: VM SKU from `az vm list-sizes --location <region> --output table`
-  vm_sku: STANDARD_DS3_V2
+  vm_sku: STANDARD_DS3_V2, STANDARD_D13_V2, STANDARD_NV6
   ## Cluster Name: Give a name to your new cluster. Up to 16 characters.
-  cluster_name: ds3_v2_cluster
+  cluster_name: ds3_v2_cluster, ds13_v2_2ndclust, nv6_gpucluster

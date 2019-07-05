@@ -56,9 +56,12 @@ fi
 #workspace_name=${config_compute_workspace}
 workspace_name=$resource_name"ws"
 
-NODES=${config_compute_nodes}
-PRIORITY=${config_compute_priority}
-vm_size=${config_compute_vm_sku}
+#NODES=${config_compute_nodes}
+IFS=',()][' read -a NODES <<<${config_compute_nodes}
+#PRIORITY=${config_compute_priority}
+IFS=',()][' read -a PRIORITY <<<${config_compute_priority}
+#vm_size=${config_compute_vm_sku}
+IFS=',()][' read -a vm_size <<<${config_compute_vm_sku}
 
 #resourcegroup_name=$DEPARTMENT_NAME-$TEAM_NAME-$LOCATION-$DEVENVIRONMENT
 #resource_name=$DEPARTMENT_NAME$TEAM_NAME$LOCATION$DEVENVIRONMENT
@@ -82,39 +85,45 @@ then
 	exit 1
 fi
 
-priorityabbr=${PRIORITY:0:3}
+#priorityabbr=${PRIORITY:0:3}
 
-#computetarget_name=${vm_size//_/-}"-cluster-"$LOCATION_ABBR-$priorityabbr
-config_compute_cluster_name=${config_compute_cluster_name//_/-}
-computetarget_name=${config_compute_cluster_name:0:15}
+##computetarget_name=${vm_size//_/-}"-cluster-"$LOCATION_ABBR-$priorityabbr
+#config_compute_cluster_name=${config_compute_cluster_name//_/-}
+#computetarget_name=${config_compute_cluster_name:0:15}
+IFS=',()][' read -a computetarget_name <<<${config_compute_cluster_name}
 
-echo "### Creating compute with the following... ###"
-echo "Cluster Name: "$computetarget_name
-echo "Maximum number of Nodes: "$NODES
-echo "VM Size: "$vm_size
-echo "Priority: "$PRIORITY
-echo "Resource Group: "$resourcegroup_name
-echo "Workspace: "$workspace_name
-echo "Admin: "$TEAM_LEAD
-read -p "Review compute target. Press the enter key to continue " -n1 -s
-echo
+echo "Creating "${#computetarget_name[@]}" compute clusters..."
 
-az ml computetarget create amlcompute --name $computetarget_name \
-    --max-nodes $NODES --vm-size $vm_size \
-    --workspace-name $workspace_name --idle-seconds-before-scaledown 1800 \
-    --vm-priority $PRIORITY --resource-group $resourcegroup_name -v \
-    --admin-username $TEAM_LEAD --admin-user-password $workspace_name
+for i in "$computetarget_name[@]"
+do
+	echo "### Creating compute with the following... ###"
+	echo "Cluster Name: "${computetarget_name[i]}
+	echo "Maximum number of Nodes: "${NODES[i]}
+	echo "VM Size: "${vm_size[i]}
+	echo "Priority: "${PRIORITY[i]}
+	echo "Resource Group: "$resourcegroup_name
+	echo "Workspace: "$workspace_name
+	echo "Admin: "$TEAM_LEAD
+	#read -p "Review compute target. Press the enter key to continue " -n1 -s
+	#echo
 
-az ml computetarget show --name $computetarget_name \
-    --workspace-name $workspace_name --resource-group $resourcegroup_name -v
+	az ml computetarget create amlcompute --name ${computetarget_name[i]} \
+		--max-nodes ${NODES[i]} --vm-size ${vm_size[i]} \
+		--workspace-name $workspace_name --idle-seconds-before-scaledown 1800 \
+		--vm-priority ${PRIORITY[i]} --resource-group $resourcegroup_name -v \
+		--admin-username $TEAM_LEAD --admin-user-password $workspace_name
 
-tag=$vm_size_$PRIORITY=$NODES
-az resource update --resource-group $resourcegroup_name --name $workspace_name \
-    --resource-type "Microsoft.MachineLearningServices/workspaces" --set tags.$tag
+	az ml computetarget show --name ${computetarget_name[i]} \
+		--workspace-name $workspace_name --resource-group $resourcegroup_name -v
 
-az ml workspace show --resource-group $resourcegroup_name --workspace-name $workspace_name
+	tag=${vm_size[i]}_${PRIORITY[i]}=${NODES[i]}
+	az resource update --resource-group $resourcegroup_name --name $workspace_name \
+		--resource-type "Microsoft.MachineLearningServices/workspaces" --set tags.$tag
 
-az ml computetarget list --resource-group $resourcegroup_name --workspace-name $workspace_name
+	az ml workspace show --resource-group $resourcegroup_name --workspace-name $workspace_name
+
+	az ml computetarget list --resource-group $resourcegroup_name --workspace-name $workspace_name
+done
 
 echo "For your users to use in the orientation lab:"
 echo "export RESOURCE_GROUP=\"$resourcegroup_name\"
