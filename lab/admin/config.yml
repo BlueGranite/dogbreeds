@@ -36,7 +36,7 @@ compute:
 
 ## Configurations for assigning users to roles
 roles:
-    ## Team Leads: Accounts to be assigned to the Team Lead role (comma-separated list)
-    team_leads: cford@blue-granite.com, alathrop@blue-granite.com
-    ## Data Scientists: Accounts to be assigned to the Data Scientist role (comma-separated list)
-    data_scientists: alathrop@blue-granite.com, mquinn@blue-granite.com
+  ## Team Leads: Accounts to be assigned to the Team Lead role (comma-separated list)
+  team_leads: cford@blue-granite.com, alathrop@blue-granite.com
+  ## Data Scientists: Accounts to be assigned to the Data Scientist role (comma-separated list)
+  data_scientists: alathrop@blue-granite.com, mquinn@blue-granite.com

@@ -158,7 +158,7 @@ do
 	#data_storage_account_key=$(az storage account keys list -g $resourcegroup_name -n $data_storage_account_name --query [0].value | tr -d '"')
 	az role assignment create --role 'Storage Blob Data Owner' --assignee $admin --scope $data_storage_account_id
 
-	if [ $ADLS == 'y' ]
+	if [ "$ADLS" == 'y' ]
 	then
 		data_lake_store_name=$resource_name"big"
 		data_lake_store_name=${data_lake_store_name:0:23}
@@ -208,7 +208,7 @@ do
 	#data_storage_account_key=$(az storage account keys list -g $resourcegroup_name -n $data_storage_account_name --query [0].value | tr -d '"')
 	az role assignment create --role 'Storage Blob Data Contributor' --assignee $user --scope $data_storage_account_id
 	
-	if [ $ADLS == 'y' ]
+	if [ "$ADLS" == 'y' ]
 	then
 		data_lake_store_name=$resource_name"big"
 		data_lake_store_name=${data_lake_store_name:0:23}
@@ -220,7 +220,7 @@ do
     # add access to view the keys, but not delete keys or delete or purge secrets
     az keyvault set-policy --name $key_vault_name --resource-group $resourcegroup_name --upn $user \
     --key-permissions backup create decrypt encrypt get import list purge recover restore sign unwrapKey update verify wrapKey \
-    --secret-permissions backup get list recover, restore, set
+    --secret-permissions backup get list recover restore set
 	
 	
 done
