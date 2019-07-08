@@ -292,12 +292,12 @@ else
   read -p  "Who else would you like to add? (e.g. user@domain.com) " OTHER_USER
   $user = "$OTHER_USER"
 	#$user = $useralias + "@microsoft.com"
-	echo "adding "$user" as ML contributor"
+	echo "adding "$user" as Data Scientist"
 
 	# grant reader permission for the team lead to the resource group
 	az role assignment create --role 'Reader' --assignee $user  --resource-group $resourcegroup_name
 
-	az ml workspace share -w $workspace_name -g $resourcegroup_name --role "Ml User" --user $admin
+	az ml workspace share -w $workspace_name -g $resourcegroup_name --role "Data Scientist" --user $admin
 
 	az role assignment create --role 'Contributor' --assignee $user --scope $applicationInsights_provider
 	az role assignment create --role 'Storage Blob Data Contributor' --assignee $user --scope $storageAccount_provider

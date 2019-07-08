@@ -25,11 +25,18 @@ workspace:
 
 ## Configurations for the Compute Target creation
 compute:
-  ## Nodes: Maximum number of nodes in the cluster
+  ## Nodes: Maximum number of nodes in the cluster (comma-separated list)
   nodes: 1, 2, 1
-  ## Priority: either `lowpriority` or `dedicated`
+  ## Priority: either `lowpriority` or `dedicated` (comma-separated list)
   priority: lowpriority, lowpriority, lowpriority
-  ## VM SKU: VM SKU from `az vm list-sizes --location <region> --output table`
+  ## VM SKU: VM SKU from `az vm list-sizes --location <region> --output table` (comma-separated list)
   vm_sku: STANDARD_DS3_V2, STANDARD_D13_V2, STANDARD_NV6
-  ## Cluster Name: Give a name to your new cluster. Up to 16 characters.
+  ## Cluster Name: Give a name to your new cluster. Up to 16 characters. (comma-separated list)
   cluster_name: ds3-v2-cluster, ds13-v2-2ndclust, nv6-gpucluster
+
+## Configurations for assigning users to roles
+roles:
+    ## Team Leads: Accounts to be assigned to the Team Lead role (comma-separated list)
+    team_leads: cford@blue-granite.com, alathrop@blue-granite.com
+    ## Data Scientists: Accounts to be assigned to the Data Scientist role (comma-separated list)
+    data_scientists: alathrop@blue-granite.com, mquinn@blue-granite.com
