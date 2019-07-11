@@ -32,7 +32,7 @@ Access management for cloud resources is a critical function for any organizatio
 
 In this  tutorial, Administrators are those who are assigned the role of Subscription and Workspace Owners. A custom role of ‘Data Scientist’ will be created. Thus, we will have three RBAC roles in play for the AML service.  Owner  (built-in role) for the Admin  persona, Reader  (built-in role) for applications or those with read access only, and Data Scientist (custom role) for data scientist persona.
 
-This tutorial will cover automation and management related to:
+#### This tutorial will cover automation and management related to:
 
 - Creating custom user roles,  such as a data scientist, with defined permissions related to compute resources
 
@@ -42,7 +42,7 @@ This tutorial will cover automation and management related to:
 
 - Assigning user permissions at various scopes, such as subscription or workspace
 
-Important concepts:
+__Important concepts:__
 
 - [AzureML workspaces](https://docs.microsoft.com/en-us/azure/machine-learning/service/concept-workspace) allow collaboration through data set and model registration
 
@@ -50,13 +50,13 @@ Important concepts:
 
 - How to enforce compute resource quota across team members
 
-Assumptions:
+__Assumptions:__
 
 - Users of this guide will already have an assigned subscription ID and compute quota.
 
-This guide will focus on roles for two personas: ‘*Admin*’ and ‘*Data Scientist*.’
+#### This guide will focus on roles for two personas: ‘*Admin*’ and ‘*Data Scientist*’.
 
-Admin persona:
+__Admin persona:__
 
 - create and manage access to resource groups and AzureML workspaces for data science teams
 
@@ -70,7 +70,7 @@ Admin persona:
 
 - provide AzureML training resources to team members
 
-Data Scientist persona:
+__Data Scientist persona:__
 
 - Use workspace to run machine learning experiments, especially at scale with remote compute resources
 
