@@ -4,14 +4,6 @@
 
 The purpose of this tutorial is to guide administrators on creating and preparing Azure Machine Learning (AzureML) service workspaces for data scientists. AzureML empowers teams to collaboratively build, train, and deploy machine learning models.
 
-<details>
-<summary><strong><em>Table of Contents</em></strong></summary>
-
-* [Scenarios](#scenarios)
-
-
-</details>
-
 ### Scenarios:
 
 An enterprise can have multiple organizations responsible for its own profit & loss. Each organization can have its own subscription to track its resource capacity utilization and billing. All Azure Machine Learning resources can be shared across a  subscription, but proper workspace configuration is required to monitor resource usage and control spend. For example, in Microsoft Research, there are multiple subscriptions, each representing subgroups within Microsoft responsible for resource capacity planning. The way resources are distributed and shared is differs by group. In one subscription, each resource group represents one team and there will be one workspace in that resource group for the entire team.
@@ -84,7 +76,9 @@ Data Scientist persona:
 
 2. Setup Azure ML workspace using a provided template script. This script includes creating a custom ‘Data Scientist’ role.  
 
-3. Setup compute resources using a provided template script.  
+3. Setup compute resources using a provided template script.
+
+4. Assigning Users to Roles
 
 4. Additional Considerations for Workspace Design.
 
@@ -92,9 +86,9 @@ Data Scientist persona:
 
 ---
 
-### Activities for Setup:
+## Activities for Setup:
 
-#### 1. Access the Azure Command Line Interface (CLI) in the Azure Portal and clone the file repository
+### 1. Access the Azure Command Line Interface (CLI) in the Azure Portal and Clone the File Repository
 
 The Azure CLI is a command-line tool providing a great experience for managing Azure resources. The CLI is designed to make scripting easy, query data, support long-running operations, and more.
 
@@ -106,7 +100,7 @@ Log into the Azure Portal and click on the cloud shell icon in the top right pan
 
 ![](img/2_AccessCLI.png)
 
-#### 2. Setup AzureML Workspaces
+### 2. Setup AzureML Workspaces
 
 The workspace is the top-level resource for Azure Machine Learning service. For ideas on workspace organization see the following two links: [What is an Azure Machine Learning service workspace?](https://docs.microsoft.com/en-us/azure/machine-learning/service/concept-workspace) and [How Azure Machine Learning service works: Architecture and concepts](https://docs.microsoft.com/en-us/azure/machine-learning/service/concept-azure-machine-learning-architecture). A workspace provides a centralized place to work with the artifacts created while using Azure Machine Learning service. These artifacts include metrics and logs associated with a training run. This aids in determining the best model when testing multiple options. A workspace can be created in multiple ways including through a Resource Manager template, the Azure Portal, and Azure CLI. For this setup, a template script newamllabworkspace_azurecli_yml.sh is provided in the script repository. To access the template scripts, clone the git directory: [https://github.com/BlueGranite/dogbreeds/tree/colby](https://github.com/BlueGranite/dogbreeds/tree/colby) To clone a git directory in the Azure CLI use the following command:
 
@@ -178,7 +172,7 @@ Summary of resources created with the workspace script:
 
 The Data Scientist role is a currently a custom role. Users can be [assigned to this role](https://docs.microsoft.com/en-us/azure/machine-learning/service/how-to-assign-roles) within the Azure Portal.
 
-#### 3. Setup compute resources using a provided template script.
+### 3. Setup Compute
 
 A [compute target](https://docs.microsoft.com/en-us/azure/machine-learning/service/concept-compute-target) specifies the compute resource where a training script will be run. The target could either be on a local machine or cloud-based. Compute targets allow for an easy transition among environments without altering code.
 
@@ -214,7 +208,7 @@ To create additional compute in the same workspace:
 
 - In Azure CLI, re-run the command `bash newamllabcompute.sh` and the script will then create any computes that don't already exist.
 
-#### 4. Add Users to Roles
+### 4. Assigning User Roles
 
 You may want to configure different user privileges across data stores using [role-based access control](https://docs.microsoft.com/en-us/azure/role-based-access-control/overview#how-rbac-works) (RBAC). For example, an administrator may want to control access to storage with personally identifiable information and allow access to only certain members or teams within a workspace. The _team lead_ and *data scientist* roles can be assigned using the `assignamlworkspaceroles.sh` script. As in creating multiple computes, in the `config.yml` file, list the accounts desired for each role in a comma-separated list. Then run in the Azure CLI:
 
@@ -222,6 +216,6 @@ You may want to configure different user privileges across data stores using [ro
 
 Currently, as mentioned above, the only roles assigned by the script are Team Lead and Data Scientist. In future installments, there will be two types of B.C. Administration Roles; one at the subscription level and one at the resource group level. The subscription-level admin role will have the ability to request and create more quota. The resource group-level admin role will not be able to increase quota but can create clusters.
 
-#### 5. Additional Considerations for Workspace Design
+### 5. Additional Considerations for Workspace Design
 
 - You may want to configure workspaces differently for different organizational scenarios. Common examples include team-based and project-based design. 
