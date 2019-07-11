@@ -4,6 +4,18 @@
 
 The purpose of this tutorial is to guide administrators on creating and preparing Azure Machine Learning (AzureML) service workspaces for data scientists. AzureML empowers teams to collaboratively build, train, and deploy machine learning models.
 
+<details>
+<summary><strong><em>Table of Contents</em></strong></summary>
+
+* [Scenarios](#scenarios)
+* [Access Azure CLI and Clone Repository](#1-access-the-azure-command-line-interface-cli-in-the-azure-portal-and-clone-the-file-repository)
+* [Setup AMLS Workspaces](#2-setup-azureml-workspaces)
+* [Setup AMLS Compute](#3-setup-compute)
+* [Assigning User Roles](#4-assigning-user-roles)
+* [Additional Considerations](#5-additional-considerations-for-workspace-design)
+
+</details>
+
 ### Scenarios:
 
 An enterprise can have multiple organizations responsible for its own profit & loss. Each organization can have its own subscription to track its resource capacity utilization and billing. All Azure Machine Learning resources can be shared across a  subscription, but proper workspace configuration is required to monitor resource usage and control spend. For example, in Microsoft Research, there are multiple subscriptions, each representing subgroups within Microsoft responsible for resource capacity planning. The way resources are distributed and shared is differs by group. In one subscription, each resource group represents one team and there will be one workspace in that resource group for the entire team.
