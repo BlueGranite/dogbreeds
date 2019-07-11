@@ -1,14 +1,36 @@
-# Azure Machine Learning Service
+# Enterprise Configuration of Azure Machine Learning Service Workspaces
 
 ## Administration Tutorial
 
-The purpose of this tutorial is to guide Azure administrators and data science team managers overseeing Azure Machine Learning (AzureML) workspaces for enterprise deployments. AzureML empowers teams to collaboratively build, train, and deploy machine learning models.
+The purpose of this tutorial is to guide administrators on creating and preparing Azure Machine Learning (AzureML) service workspaces for data scientists. AzureML empowers teams to collaboratively build, train, and deploy machine learning models.
 
-One of the key goals is to restrict teams and users from creating compute targets as a cost control measure.
+<details>
+<summary><strong><em>Table of Contents</em></strong></summary>
+
+* [Scenarios](#scenarios)
+
+
+</details>
+
+### Scenarios:
+
+An enterprise can have multiple organizations responsible for its own profit & loss. Each organization can have its own subscription to track its resource capacity utilization and billing. All Azure Machine Learning resources can be shared across a  subscription, but proper workspace configuration is required to monitor resource usage and control spend. For example, in Microsoft Research, there are multiple subscriptions, each representing subgroups within Microsoft responsible for resource capacity planning. The way resources are distributed and shared is differs by group. In one subscription, each resource group represents one team and there will be one workspace in that resource group for the entire team.
+
+In another subscription, each workspace represents a specific type and quantity of GPU VM family with a limit on compute nodes. In this scenario, different users are  temporarily assigned to the resource groups based on their computing requirements. Access to the resource group and the workspace will change on a regular basis.
+
+Enterprises often have a fixed budget for each fiscal time period. Thus, being able to control access impacting the spend and utilization of compute resources is important for enterprises. There are two activities that can cause the spend to go beyond the upper limit of the budget: requesting more quota for the AML service and creating clusters which do not auto scale.
+
+Once a subscription is available, when adding an AML service, a quota request approval is required. The AML service comes with three built-in roles: Owner, Contributor and Reader. Subscription Owner and Contributor and Workspace Owner and Contributor can request quota change. Please see [this reference](https://docs.microsoft.com/en-us/azure/machine-learning/service/how-to-manage-quotas) for more information on managing quotas.
+
+Creating the right cluster definition is critical. We recommend setting the minimum number of nodes to 0 (the default) and idle seconds before scale down  to 120 (the default).  The ensures the compute cluster will automatically scale down during period of inactivity and not incur charges. Subscription Owner and Contributor, and Workspace Owner and Contributor can create and modify the cluster configuration. Please see [this reference](https://docs.microsoft.com/en-us/azure/machine-learning/service/how-to-set-up-training-targets) for more information on setting up compute clusters.
+
+Access management for cloud resources is a critical function for any organization that is using the cloud. [Role-based access control (RBAC)](https://docs.microsoft.com/en-us/azure/role-based-access-control/overview) helps you manage who has access to Azure resources, what they can do with those resources, and what areas they have access to. In an enterprise scenario for AML, we would like to manage which users can perform actions such as requesting resource quota and creating/modifying compute clusters. Data scientists should be able to prepare data, build, train, deploy and inference models in the workspaces within the  approved resources and using clusters already setup by Administrators.
+
+In this  tutorial, Administrators are those who are assigned the role of Subscription and Workspace Owners. A custom role of ‘Data Scientist’ will be created. Thus, we will have three RBAC roles in play for the AML service.  Owner  (built-in role) for the Admin  persona, Reader  (built-in role) for applications or those with read access only, and Data Scientist (custom role) for data scientist persona.
 
 This tutorial will cover automation and management related to:
 
-- Creating user roles, such as a data scientist, with defined permissions related to compute resources
+- Creating custom user roles,  such as a data scientist, with defined permissions related to compute resources
 
 - Creating resource groups for AzureML-related resources
 
@@ -18,27 +40,31 @@ This tutorial will cover automation and management related to:
 
 Important concepts:
 
-- AzureML workspaces allow collaboration through data set and model registration
+- [AzureML workspaces](https://docs.microsoft.com/en-us/azure/machine-learning/service/concept-workspace) allow collaboration through data set and model registration
 
-- Understand the default roles: owner, contributor, and reader … compared to custom role of data scientist
+- Understand user roles: owner, reader, and the custom role of data scientist
 
 - How to enforce compute resource quota across team members
 
-This guide will focus on roles for two personas: *Admin* and *Data Scientist*.
+Assumptions:
+
+- Users of this guide will already have an assigned subscription ID and compute quota.
+
+This guide will focus on roles for two personas: ‘*Admin*’ and ‘*Data Scientist*.’
 
 Admin persona:
 
-- Create and manage access to resource groups and AzureML workspaces for data science teams
+- create and manage access to resource groups and AzureML workspaces for data science teams
 
-- Create and allocate compute resources within quota (monitor and report)
+- create and allocate compute resources within quota (monitor and report)
 
-- Create and manage shared datastores for workspace artifacts and experiment data
+- create and manage shared datastores for workspace artifacts and experiment data
 
-- Manage spend on compute resources by creating custom roles with access controls
+- manage spend on compute resources by creating custom roles with access controls
 
-- Provide shared resource information (such as secure data stores) to team members
+- provide shared resource information (such as secure data stores) to team members
 
-- Provide AzureML training resources to team members
+- provide AzureML training resources to team members
 
 Data Scientist persona:
 
@@ -52,10 +78,6 @@ Data Scientist persona:
 
 - Cannot create support tickets
 
-Assumptions:
-
-- Users of this guide will already have an assigned subscription ID and compute quota
-
 ### Overview of activities performed in this setup:
 
 1. Access the Azure Command Line Interface (CLI) in the Azure Portal and clone the file repository
@@ -68,7 +90,7 @@ Assumptions:
 
 **IMPORTANT:** The admin scripts run in Bash.
 
----------
+---
 
 ### Activities for Setup:
 
@@ -78,11 +100,11 @@ The Azure CLI is a command-line tool providing a great experience for managing A
 
 Log into the Azure Portal and click on the cloud shell icon in the top right panel:
 
-[IMAGE HERE]
+![](img/1_AccessCLI.png)
 
 [Cloud Shell](https://docs.microsoft.com/en-us/azure/cloud-shell/persisting-shell-storage) machines are temporary and require an Azure File share to be mounted as `clouddrive`. On the first launch of Cloud Shell the following items are automatically created for this purpose. If prompted to create resources for file share enter yes.
 
-[IMAGE HERE][IMAGE HERE]
+![](img/2_AccessCLI.png)
 
 #### 2. Setup AzureML Workspaces
 
@@ -93,7 +115,6 @@ The workspace is the top-level resource for Azure Machine Learning service. For 
 This workspace template script receives the required workspace creation and naming parameters such as subscription id, department, team, region, and admin from a configuration file. You will need to update the `config.yml` file with your own account information as follows:
 
 - Open the `config.yml` in the CLI editor and update the values with your own subscription and naming information. This file, along with the other required template files, are located in the downloaded directory from above in *lab/admin*.
-  
   - *Note*: To edit your `config.yml` file, you can use your favorite command line text editor such as `nano`. Use the command `nano config.yml`and the file will open in the text editior. Update the parameters to the desired values. Once you are finished editing, press `ctrl-x` to exit and then `y` to save.
   
   - Workspace Parameters:
@@ -113,40 +134,47 @@ This workspace template script receives the required workspace creation and nami
   
   - Compute Parameters:
     
-    | Parameter    | Description                                                                                                                                         | Example                             |
-    |:------------:|:---------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------:|
-    | nodes        | Maximum number of nodes to which the cluster will scale                                                                                             | 1                                   |
-    | priority     | Priority level of the cluster resource                                                                                                              | either `lowpriority` or `dedicated` |
-    | vm_sku       | VM SKU from `az vm list-sizes --location,--output table` or from [this list](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sizes) | STANDARD_DS3_V2                     |
-    | cluster_name | Name of the cluster to be created, up to 16 characters                                                                                              | ds3_v2_cluster                      |
+    | Parameter    | Description                                                                                                                                                  | Example                                                                       |
+    |:------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------:|
+    | nodes        | List of maximum number of nodes to which each cluster will scale                                                                                             | 1, 2, 1                                                                       |
+    | priority     | List of priority levels of the cluster resources                                                                                                             | lowpriority, dedicated, lowpriority<br/>(either `lowpriority` or `dedicated`) |
+    | vm_sku       | List of VM SKUs from `az vm list-sizes --location,--output table` or from [this list](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sizes) | STANDARD_DS3_V2, STANDARD_D13_V2, STANDARD_NV6                                |
+    | cluster_name | List of cluster names to be created, up to 16 characters each.                                                                                               | ds3-v2-cluster, ds13-v2-2ndclust, nv6-gpucluster                              |
+  
+  - Role Parameters
+    
+    | Parameter       | Description                                                | Example                         |
+    | --------------- | ---------------------------------------------------------- | ------------------------------- |
+    | team_leads      | List of accounts to be assigned to the Team Lead role      | admin1@site.com, user1@site.com |
+    | data_scientists | List of accounts to be assigned to the Data Scientist role | user1@site.com, user2@site.com  |
 
-Run the workspace creation script by using `bash newamllabworkspace_azurecli_yml.sh`. The script will automatically look for the `config.yml` file to read in your settings.
+Run the workspace creation script by using `bash newamllabworkspace.sh`. The script will automatically look for the `config.yml` file to read in your settings.
 
-The user also has the option to specify a different YAML file for the script to use. Simply create your YAML file and pass the filename in as you call the script using `bash newamllabworkspace_azurecli_yml.sh <YOUR CONFIG FILENAME>.yml`. 
+The user also has the option to specify a different YAML file for the script to use. Simply create your YAML file and pass the filename in as you call the script using `bash newamllabworkspace.sh <YOUR CONFIG FILENAME>.yml`. 
 
 Enter ‘`y`’ to continue. A prompt will appear to follow the Microsoft link to login with the provided authentication code.
 
-[IMAGE HERE]
+![](img/1_SetupWorkspaces.png)
 
 This will create the workspace along with the necessary resources.
 
-[IMAGE HERE]
+![](img/2_SetupWorkspaces.png)
 
 By navigating to the specified subscription and resource group in the Azure portal window all the resources created can be viewed:
 
-[IMAGE HERE]
+![](img/3_SetupWorkspaces.png)
 
 Summary of resources created with the workspace script:
 
-| Resource            | User                                                                                                                            |
-|:-------------------:|:-------------------------------------------------------------------------------------------------------------------------------:|
-| Resource Group      | Reader                                                                                                                          |
-| Workspace           | Data Scientist                                                                                                                  |
-| Storage Account     | Storage Blob Data (2 accounts one for data and one for dev work)                                                                |
-| Container Registry  | Contributor                                                                                                                     |
-| Key Vault           | Contributor                                                                                                                     |
-| App Insights        | Contributor                                                                                                                     |
-| Data Scientist Role | Can use the workspace and shared resources but cannot request compute quota, modify compute resources or create support tickets |
+| Resource            | Description                                                                                                                                                              |
+|:-------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
+| Resource Group      | The top-level resource that provides a centralized location for all the resources                                                                                        |
+| ML Workspace        | The service for Machine Learning in Azure, includesexperiment tracking, model management, operationalization, and more.                                                  |
+| Storage Account     | Two accounts are created, `devdata` and `devwork`. The `devdata` is used to store data for analysis. The `devwork` is used to store any artifacts created from the runs. |
+| Container Registry  | Used to build, store, and manage images for container deployments.                                                                                                       |
+| Key Vault           | Used to encrypt and store authentication keys, storage account keys, and secrets                                                                                         |
+| App Insights        | Used to monitor the live web application, including detecting anomalies and understanding user interaction.                                                              |
+| Data Scientist Role | Can use the workspace and shared resources but cannot request compute quota, modify compute resources or create support tickets                                          |
 
 The Data Scientist role is a currently a custom role. Users can be [assigned to this role](https://docs.microsoft.com/en-us/azure/machine-learning/service/how-to-assign-roles) within the Azure Portal.
 
@@ -154,7 +182,7 @@ The Data Scientist role is a currently a custom role. Users can be [assigned to 
 
 A [compute target](https://docs.microsoft.com/en-us/azure/machine-learning/service/concept-compute-target) specifies the compute resource where a training script will be run. The target could either be on a local machine or cloud-based. Compute targets allow for an easy transition among environments without altering code.
 
-The `newamllabcompute_azurecli_yml.sh` script creates a remote compute target accessible by the workspace.  The parameters required for the compute script include:
+The `newamllabcompute.sh` script creates a remote compute target accessible by the workspace.  The parameters required for the compute script include:
 
 - Maximum number of nodes
 
@@ -164,30 +192,36 @@ The `newamllabcompute_azurecli_yml.sh` script creates a remote compute target ac
 
 - Cluster Name: Up to 16 characters allowed
 
-Similarly, to the workspace script, these parameters can be customized in the `custom_config.yml` file.
+Similarly, to the workspace script, these parameters can be customized in the `config.yml` file or your own YAML file.
 
-To run the compute script, enter `bash newamllabcompute_azurecli_yml.sh` or `bash newamllabcompute_azurecli_yml.sh <YOUR CONFIG FILENAME>.yml` (if using a different YAML file from the `config.yml`). Again, follow the Microsoft hyperlink to the login page and enter the provided authentication code.
+To run the compute script, enter `bash newamllabcompute.sh` or `bash newamllabcompute.sh <YOUR CONFIG FILENAME>.yml` (if using a different YAML file from the `config.yml`). Again, follow the Microsoft hyperlink to the login page and enter the provided authentication code.
 
-[IMAGE HERE]
+![](img/1_SetupCompute.png)
 
 The compute parameters are displayed and pressing enter to verify the parameters are correct launches the creation of the compute target
 
-[IMAGE HERE][IMAGE HERE]
+![](img/2_SetupCompute.png)
 
 Attributes and properties of the cluster can be viewed by navigating to the machine learning workspace and clicking on the Compute icon on the left side panel.
 
-[IMAGE HERE]
+![](img/3_SetupCompute.png)
 
 To create additional compute in the same workspace:
 
-- Edit the `custom_config.yml` with the new compute’s desired parameters
+- Edit the `config.yml` and add your additional compute specifications to the parameter lists.
 
 - The name of the new compute must be different from the existing computes
 
-- In Azure CLI re-run the command `bash newamllabcompute_azurecli_yml.sh custom_config.yml`
+- In Azure CLI, re-run the command `bash newamllabcompute.sh` and the script will then create any computes that don't already exist.
 
-#### 4. Additional Considerations for Workspace Design
+#### 4. Add Users to Roles
 
-· You may want to configure different user privileges across data stores using [role-based access control](https://docs.microsoft.com/en-us/azure/role-based-access-control/overview#how-rbac-works) (RBAC). For example, an administrator may want to control access to storage with personally identifiable information and allow access to only certain members or teams within a workspace.  
+You may want to configure different user privileges across data stores using [role-based access control](https://docs.microsoft.com/en-us/azure/role-based-access-control/overview#how-rbac-works) (RBAC). For example, an administrator may want to control access to storage with personally identifiable information and allow access to only certain members or teams within a workspace. The _team lead_ and *data scientist* roles can be assigned using the `assignamlworkspaceroles.sh` script. As in creating multiple computes, in the `config.yml` file, list the accounts desired for each role in a comma-separated list. Then run in the Azure CLI:
 
-· You may want to configure workspaces differently for different organizational scenarios. Common examples include team-based and project-based design. << Looking for suggestions here from Sung >>
+`bash assignamlworkspaceroles.sh` or `bash assignamlworkspaceroles.sh <YOUR CONFIG FILENAME>.yml`
+
+Currently, as mentioned above, the only roles assigned by the script are Team Lead and Data Scientist. In future installments, there will be two types of B.C. Administration Roles; one at the subscription level and one at the resource group level. The subscription-level admin role will have the ability to request and create more quota. The resource group-level admin role will not be able to increase quota but can create clusters.
+
+#### 5. Additional Considerations for Workspace Design
+
+- You may want to configure workspaces differently for different organizational scenarios. Common examples include team-based and project-based design. 
