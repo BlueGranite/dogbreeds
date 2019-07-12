@@ -54,9 +54,9 @@ __Assumptions:__
 
 - Users of this guide will already have an assigned subscription ID and compute quota.
 
-#### This guide will focus on roles for two personas: ‘*Admin*’ and ‘*Data Scientist*’.
+#### This guide will focus on roles for two personas: ‘*Team Lead*’ and ‘*Data Scientist*’.
 
-__Admin persona:__
+__Team Lead persona:__
 
 - create and manage access to resource groups and AzureML workspaces for data science teams
 
