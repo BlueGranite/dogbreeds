@@ -22,11 +22,11 @@ This tutorial provides instructions for automating workspace creation along with
 
 Step-by-step instructions are provided for the following scripts included in this repository:
 
-- [Workspace Creation using `newamllabworkspace.sh`](#2-setup-azureml-workspaces)
+- [Workspace Creation using `newamllabworkspace.sh`](#2-setup-azureml-workspaces) - Creates a customized workspace and a *Data Scientist* user role.
 
-- [Compute Creation using `newamllabcompute.sh`](#3-setup-compute)
+- [Compute Creation using `newamllabcompute.sh`](#3-setup-compute) - Creates one or more remote compute targets.
 
-- [Role Assignment using `assignamlworkspaceroles.sh`](#4-assigning-user-roles)
+- [Role Assignment using `assignamlworkspaceroles.sh`](#4-assigning-user-roles) - Assigns one or more users to the *Team Lead* and *Data Scientist* roles.
 
 ### Scenarios:
 
@@ -144,8 +144,6 @@ For this setup, a template script `newamllabworkspace.sh` is provided in the scr
 
 - The Data Scientist role is created as a custom role. Users can be [assigned to this role](https://docs.microsoft.com/en-us/azure/machine-learning/service/how-to-assign-roles) within the Azure Portal or using the `assignamlworkspaceroles.sh` (as shown in [step 4](#4-assigning-user-roles) below).
 
-
-
 #### To Begin...
 
 Clone the git directory in the Azure CLI use the following command:
@@ -228,8 +226,6 @@ The parameters required for the compute script include:
 
 *Note:* Multiple computes can be created by using comma-separated lists for each of these parameters.
 
-
-
 Similarly, to the workspace script, these parameters can be customized in the `config.yml` file or your own YAML file.
 
 To run the compute script, enter `bash newamllabcompute.sh` or `bash newamllabcompute.sh <YOUR CONFIG FILENAME>.yml` (if using a different YAML file from the `config.yml`). Again, follow the Microsoft hyperlink to the login page and enter the provided authentication code.
@@ -257,8 +253,6 @@ To create additional computes in the same workspace:
 ### 4. Assigning User Roles
 
 You may want to configure different user privileges across data stores using [role-based access control](https://docs.microsoft.com/en-us/azure/role-based-access-control/overview#how-rbac-works) (RBAC). For example, an administrator may want to control access to storage with personally identifiable information and allow access to only certain members or teams within a workspace. The _team lead_ and *data scientist* roles can be assigned using the `assignamlworkspaceroles.sh` script.
-
-
 
 For this setup, a template script `assignamlworkspaceroles.sh` is provided in the script repository.
 
