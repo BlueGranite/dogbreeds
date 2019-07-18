@@ -16,6 +16,16 @@ The purpose of this tutorial is to guide administrators on creating and preparin
 
 </details>
 
+This tutorial provides instructions for automating workspace creation along with customization options for creating compute targets and assigning roles to users.
+
+Step-by-step instructions are provided for the following scripts included in this repository:
+
+- [Workspace Creation using `newamllabworkspace.sh`](#2-setup-azureml-workspaces)
+
+- [Compute Creation using `newamllabcompute.sh`](#3-setup-compute)
+
+- [Role Assignment using `assignamlworkspaceroles.sh`](#4-assigning-user-roles)
+
 ### Scenarios:
 
 An enterprise can have multiple organizations responsible for its own profit & loss. Each organization can have its own subscription to track its resource capacity utilization and billing. All Azure Machine Learning resources can be shared across a  subscription, but proper workspace configuration is required to monitor resource usage and control spend. For example, in Microsoft Research, there are multiple subscriptions, each representing subgroups within Microsoft responsible for resource capacity planning. The way resources are distributed and shared is differs by group. In one subscription, each resource group represents one team and there will be one workspace in that resource group for the entire team.
@@ -92,7 +102,7 @@ __Data Scientist persona:__
 
 4. Assigning Users to Roles
 
-4. Additional Considerations for Workspace Design.
+5. Additional Considerations for Workspace Design.
 
 **IMPORTANT:** The admin scripts run in Bash.
 
@@ -114,23 +124,47 @@ Log into the Azure Portal and click on the cloud shell icon in the top right pan
 
 ### 2. Setup AzureML Workspaces
 
-The workspace is the top-level resource for Azure Machine Learning service. For ideas on workspace organization see the following two links: [What is an Azure Machine Learning service workspace?](https://docs.microsoft.com/en-us/azure/machine-learning/service/concept-workspace) and [How Azure Machine Learning service works: Architecture and concepts](https://docs.microsoft.com/en-us/azure/machine-learning/service/concept-azure-machine-learning-architecture). A workspace provides a centralized place to work with the artifacts created while using Azure Machine Learning service. These artifacts include metrics and logs associated with a training run. This aids in determining the best model when testing multiple options. A workspace can be created in multiple ways including through a Resource Manager template, the Azure Portal, and Azure CLI. For this setup, a template script newamllabworkspace_azurecli_yml.sh is provided in the script repository. To access the template scripts, clone the git directory: [https://github.com/BlueGranite/dogbreeds/tree/colby](https://github.com/BlueGranite/dogbreeds/tree/colby) To clone a git directory in the Azure CLI use the following command:
+The _workspace_ is the top-level resource for Azure Machine Learning service. For ideas on workspace organization see the following two links: [What is an Azure Machine Learning service workspace?](https://docs.microsoft.com/en-us/azure/machine-learning/service/concept-workspace) and [How Azure Machine Learning service works: Architecture and concepts](https://docs.microsoft.com/en-us/azure/machine-learning/service/concept-azure-machine-learning-architecture). A workspace provides a centralized place to work with the artifacts created while using Azure Machine Learning service. These artifacts include metrics and logs associated with a training run. This aids in determining the best model when testing multiple options. A workspace can be created in multiple ways including through a Resource Manager template, the Azure Portal, and Azure CLI.
+
+For this setup, a template script `newamllabworkspace.sh` is provided in the script repository.
+
+- This script provisions the following resources using parameters specified in the `config.yml` file (editing instructions to customize your workspace are shown [below](#workspace-parameters)):
+
+| Resource            | Description                                                                                                                                                              |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Resource Group      | The top-level resource that provides a centralized location for all the resources                                                                                        |
+| ML Workspace        | The service for Machine Learning in Azure, includesexperiment tracking, model management, operationalization, and more.                                                  |
+| Storage Account     | Two accounts are created, `devdata` and `devwork`. The `devdata` is used to store data for analysis. The `devwork` is used to store any artifacts created from the runs. |
+| Container Registry  | Used to build, store, and manage images for container deployments.                                                                                                       |
+| Key Vault           | Used to encrypt and store authentication keys, storage account keys, and secrets                                                                                         |
+| App Insights        | Used to monitor the live web application, including detecting anomalies and understanding user interaction.                                                              |
+| Data Scientist Role | Can use the workspace and shared resources but cannot request compute quota, modify compute resources or create support tickets                                          |
+
+- The Data Scientist role is created as a custom role. Users can be [assigned to this role](https://docs.microsoft.com/en-us/azure/machine-learning/service/how-to-assign-roles) within the Azure Portal or using the `assignamlworkspaceroles.sh` (as shown in [step 4](#4-assigning-user-roles) below).
+
+
+
+#### To Begin...
+
+Clone the git directory in the Azure CLI use the following command:
 
 `git clone --single-branch --branch colby https://github.com/BlueGranite/dogbreeds.git`
+
+[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
 
 This workspace template script receives the required workspace creation and naming parameters such as subscription id, department, team, region, and admin from a configuration file. You will need to update the `config.yml` file with your own account information as follows:
 
 - Open the `config.yml` in the CLI editor and update the values with your own subscription and naming information. This file, along with the other required template files, are located in the downloaded directory from above in *lab/admin*.
   - *Note*: To edit your `config.yml` file, you can use your favorite command line text editor such as `nano`. Use the command `nano config.yml`and the file will open in the text editior. Update the parameters to the desired values. Once you are finished editing, press `ctrl-x` to exit and then `y` to save.
   
-  - Workspace Parameters:
+  - ##### Workspace Parameters:
     
     | Parameter      | Description                                                                                                                                                                                                                                                                                              | Example                                          |
     |:--------------:|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:------------------------------------------------:|
     | subscription   | Your Azure subscription where the resources are to be created                                                                                                                                                                                                                                            | 8b41ca0c-0c5a-4c01-b49b-5bb8d329cc27             |
     | custom_name    | Give a custom name to the resources. Can be used to suppress Microsoft’s automatic, conventional naming scheme of concatenating the other parameters. This parameter is useful in ensuring multiple workspaces with common names are not trying to be created which would result in an error. (Optional) | myamlsresource                                   |
-    | department     | 4 characters to specify the department name at your organization                                                                                                                                                                                                                                         | bgmr                                             |
-    | team           | 10 characters to specify the team name at your organization                                                                                                                                                                                                                                              | bluegranit                                       |
+    | department     | 4 characters to specify the department name at your organization                                                                                                                                                                                                                                         | dpt2                                             |
+    | team           | 10 characters to specify the team name at your organization                                                                                                                                                                                                                                              | myteam                                           |
     | region         | The region where the resources are to be created.                                                                                                                                                                                                                                                        | eastus2                                          |
     | region_abbv    | 2 characters abbreviation of the desired region                                                                                                                                                                                                                                                          | e2                                               |
     | environment    | 3 characters to specify the type of environment                                                                                                                                                                                                                                                          | select from `res`, `dev`, or `pro`               |
@@ -140,6 +174,8 @@ This workspace template script receives the required workspace creation and nami
   
   - Compute Parameters:
     
+    *Note:* Each of these parameters can either be a single value or a comma-separated list of values if you want to create multiple computes at once.
+    
     | Parameter    | Description                                                                                                                                                  | Example                                                                       |
     |:------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------:|
     | nodes        | List of maximum number of nodes to which each cluster will scale                                                                                             | 1, 2, 1                                                                       |
@@ -147,7 +183,9 @@ This workspace template script receives the required workspace creation and nami
     | vm_sku       | List of VM SKUs from `az vm list-sizes --location,--output table` or from [this list](https://docs.microsoft.com/en-us/azure/virtual-machines/windows/sizes) | STANDARD_DS3_V2, STANDARD_D13_V2, STANDARD_NV6                                |
     | cluster_name | List of cluster names to be created, up to 16 characters each.                                                                                               | ds3-v2-cluster, ds13-v2-2ndclust, nv6-gpucluster                              |
   
-  - Role Parameters
+  - Role Parameters:
+    
+    *Note:* Each of these parameters can either be a single value or a comma-separated list of values if you want to assign multiple users at once.
     
     | Parameter       | Description                                                | Example                         |
     | --------------- | ---------------------------------------------------------- | ------------------------------- |
@@ -170,25 +208,15 @@ By navigating to the specified subscription and resource group in the Azure port
 
 ![](img/3_SetupWorkspaces.png)
 
-Summary of resources created with the workspace script:
-
-| Resource            | Description                                                                                                                                                              |
-|:-------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| Resource Group      | The top-level resource that provides a centralized location for all the resources                                                                                        |
-| ML Workspace        | The service for Machine Learning in Azure, includesexperiment tracking, model management, operationalization, and more.                                                  |
-| Storage Account     | Two accounts are created, `devdata` and `devwork`. The `devdata` is used to store data for analysis. The `devwork` is used to store any artifacts created from the runs. |
-| Container Registry  | Used to build, store, and manage images for container deployments.                                                                                                       |
-| Key Vault           | Used to encrypt and store authentication keys, storage account keys, and secrets                                                                                         |
-| App Insights        | Used to monitor the live web application, including detecting anomalies and understanding user interaction.                                                              |
-| Data Scientist Role | Can use the workspace and shared resources but cannot request compute quota, modify compute resources or create support tickets                                          |
-
-The Data Scientist role is a currently a custom role. Users can be [assigned to this role](https://docs.microsoft.com/en-us/azure/machine-learning/service/how-to-assign-roles) within the Azure Portal.
-
 ### 3. Setup Compute
 
 A [compute target](https://docs.microsoft.com/en-us/azure/machine-learning/service/concept-compute-target) specifies the compute resource where a training script will be run. The target could either be on a local machine or cloud-based. Compute targets allow for an easy transition among environments without altering code.
 
-The `newamllabcompute.sh` script creates a remote compute target accessible by the workspace.  The parameters required for the compute script include:
+For this setup, a template script `newamllabcompute.sh` is provided in the script repository.
+
+- This script creates one or more remote compute targets using parameters specified in the `config.yml` file (editing instructions to customize your compute targets are explained [above](#workspace-parameters)).
+
+The parameters required for the compute script include:
 
 - Maximum number of nodes
 
@@ -197,6 +225,10 @@ The `newamllabcompute.sh` script creates a remote compute target accessible by t
 - VM SKU: Options for this parameter can be found using the command `az vm list-sizes --location <region> --output table`
 
 - Cluster Name: Up to 16 characters allowed
+
+*Note:* Multiple computes can be created by using comma-separated lists for each of these parameters.
+
+
 
 Similarly, to the workspace script, these parameters can be customized in the `config.yml` file or your own YAML file.
 
@@ -212,21 +244,31 @@ Attributes and properties of the cluster can be viewed by navigating to the mach
 
 ![](img/3_SetupCompute.png)
 
-To create additional compute in the same workspace:
+To create additional computes in the same workspace:
 
 - Edit the `config.yml` and add your additional compute specifications to the parameter lists.
 
 - The name of the new compute must be different from the existing computes
 
 - In Azure CLI, re-run the command `bash newamllabcompute.sh` and the script will then create any computes that don't already exist.
+  
+  Note: The script will skip over any computes that already exist (based on cluster name).
 
 ### 4. Assigning User Roles
 
-You may want to configure different user privileges across data stores using [role-based access control](https://docs.microsoft.com/en-us/azure/role-based-access-control/overview#how-rbac-works) (RBAC). For example, an administrator may want to control access to storage with personally identifiable information and allow access to only certain members or teams within a workspace. The _team lead_ and *data scientist* roles can be assigned using the `assignamlworkspaceroles.sh` script. As in creating multiple computes, in the `config.yml` file, list the accounts desired for each role in a comma-separated list. Then run in the Azure CLI:
+You may want to configure different user privileges across data stores using [role-based access control](https://docs.microsoft.com/en-us/azure/role-based-access-control/overview#how-rbac-works) (RBAC). For example, an administrator may want to control access to storage with personally identifiable information and allow access to only certain members or teams within a workspace. The _team lead_ and *data scientist* roles can be assigned using the `assignamlworkspaceroles.sh` script.
+
+
+
+For this setup, a template script `assignamlworkspaceroles.sh` is provided in the script repository.
+
+- This script assigns one or more users to either the *Team Lead* role or the *Data Scientist* role using parameters specified in the `config.yml` file (editing instructions to customize your compute targets are explained [above](#workspace-parameters)).
+
+As in creating multiple computes, in the `config.yml` file, list the accounts desired for each role in a comma-separated list. Then run in the Azure CLI:
 
 `bash assignamlworkspaceroles.sh` or `bash assignamlworkspaceroles.sh <YOUR CONFIG FILENAME>.yml`
 
-Currently, as mentioned above, the only roles assigned by the script are Team Lead and Data Scientist. In future installments, there will be two types of B.C. Administration Roles; one at the subscription level and one at the resource group level. The subscription-level admin role will have the ability to request and create more quota. The resource group-level admin role will not be able to increase quota but can create clusters.
+Currently, as mentioned above, the only roles assigned by the script are *Team Lead* and *Data Scientist*. In future installments, there will be two types of B.C. Administration Roles; one at the subscription level and one at the resource group level. The subscription-level admin role will have the ability to request and create more quota. The resource group-level admin role will not be able to increase quota but can create clusters.
 
 ### 5. Additional Considerations for Workspace Design
 
