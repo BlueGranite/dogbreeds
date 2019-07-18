@@ -2,6 +2,8 @@
 
 ## Administration Tutorial
 
+[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://deploy.azure.com/?repository=https://github.com/BlueGranite/dogbreeds/tree/colby#/form/setup)
+
 The purpose of this tutorial is to guide administrators on creating and preparing Azure Machine Learning (AzureML) service workspaces for data scientists. AzureML empowers teams to collaboratively build, train, and deploy machine learning models.
 
 <details>
@@ -149,8 +151,6 @@ For this setup, a template script `newamllabworkspace.sh` is provided in the scr
 Clone the git directory in the Azure CLI use the following command:
 
 `git clone --single-branch --branch colby https://github.com/BlueGranite/dogbreeds.git`
-
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
 
 This workspace template script receives the required workspace creation and naming parameters such as subscription id, department, team, region, and admin from a configuration file. You will need to update the `config.yml` file with your own account information as follows:
 
